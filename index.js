@@ -1,11 +1,11 @@
 function getDistance(x1, y1, x2, y2) {
   const args = [...arguments];
   if (args.length != 4) {
-    throw new Error("Please pass 4 arguments");
+    throw new Error();
   }
   [...arguments].forEach((item) => {
     if (!isFinite(item) || item < -1000 || item > 1000 || item == null) {
-      throw new Error("One of arguments is not valid");
+      throw new Error();
     }
   });
 
@@ -18,7 +18,7 @@ function getDistance(x1, y1, x2, y2) {
 
 function switchPlaces(arr) {
   if (!Array.isArray(arr)) {
-    throw new Error("Passed argument is not array");
+    throw new Error();
   }
 
   if (arr.length === 0) {
@@ -43,7 +43,7 @@ function switchPlaces(arr) {
 
 function getDivisors(num) {
   if (!isFinite(num) || num == null) {
-    throw new Error("Please pass a number");
+    throw new Error();
   }
   let result = [];
   for (let i = num; i > 0; i--) {
