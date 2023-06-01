@@ -40,3 +40,16 @@ function switchPlaces(arr) {
   }
   return result;
 }
+
+function getDivisors(num) {
+  if (!isFinite(num) || num == null) {
+    throw new Error("Please pass a number");
+  }
+  let result = [];
+  for (let i = num; i > 0; i--) {
+    if (Number.isInteger(num / i)) {
+      result.push(i);
+    }
+  }
+  return result;
+}
