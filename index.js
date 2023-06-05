@@ -1,39 +1,58 @@
-// function makeDeepCopy(obj) {
-//   if (
-//     obj === "null" ||
-//     typeof obj != "object" ||
-//     Array.isArray(obj) ||
-//     obj instanceof Set ||
-//     obj instanceof Map
-//   ) {
-//     throw new Error();
-//   }
+//task 1
+function makeDeepCopy(obj) {
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) {
+    throw new Error();
+  } else {
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value != "object") {
+        result[key] = value;
+      } else {
+        result[key] = copyObject(value);
+      }
+    }
+    return result;
+  }
+}
 
-//   let result = {};
-//   for (key in obj) {
-//     if (typeof obj[key] != "object") {
-//       result[key] = obj[key];
-//     } else {
-//       object[key];
-//     }
+function copyObject(obj) {
+  if (typeof obj != "object") {
+    return obj;
+  } else if (Array.isArray(obj)) {
+    const newObj = obj.map((item) => {
+      if (typeof item != "object") {
+        return item;
+      } else {
+        return copyObject(item);
+      }
+    });
+    return newObj;
+  } else if (obj instanceof Map) {
+    const newObj = new Map();
+    for (const [key, value] of Object.entries(obj)) {
+      newObj.set(key, copyObject(value));
+    }
+    return newObj;
+  } else if (obj instanceof Set) {
+    const newObj = new Set();
+    for (const value of Object.values(obj)) {
+      newObj.add(cloneObject(value));
+    }
+    return newObj;
+  } else {
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value != "object") {
+        result[key] = value;
+      } else {
+        result[key] = copyObject(value);
+      }
+    }
+    return result;
+  }
+}
 
-//     console.log(result);
-//     // // }
-//   }
-//   console.log(result);
-// }
-
-// const init = {
-//   name: "Samir",
-//   contacts: {
-//     main: {
-//       work: "111",
-//       blala: [2, 3, 4],
-//     },
-//   },
-// };
-// makeDeepCopy(init);
-
+// task 2
 function createIterable(from, to) {
   if (from >= to || !to || !from) {
     throw new Error();
@@ -63,6 +82,7 @@ function createIterable(from, to) {
   });
 }
 
+// task 3
 function createProxy(obj) {
   if (!obj || obj === null || typeof obj !== "object" || Array.isArray(obj)) {
     throw new Error();
@@ -71,7 +91,8 @@ function createProxy(obj) {
   const handler = {
     get(target, prop, receiver) {
       if (prop === "name") {
-        return target.name.readAmound++;
+        target[prop].readAmound++;
+        return target[prop];
       }
     },
 
@@ -92,15 +113,3 @@ function createProxy(obj) {
   };
   return new Proxy(obj, handler);
 }
-const obj = {};
-const proxy = createProxy(obj); //create proxy
-proxy.name = "samir"; //should be allowed
-console.log("obj", obj); // should be {name {value:'samir', readAmound:0}}
-console.log("proxy", proxy);
-proxy.name = null; //should be ignored
-proxy.name = "jogn"; // should be allowed
-
-console.log("obj", obj); // should be {name {value:'jogn', readAmound:0}}
-console.log("proxy", proxy);
-const nameValue = proxy.name;
-console.log("obj", obj); // should be {name {value:'jogn', readAmound:1}}
