@@ -1,3 +1,156 @@
+body {
+  display: flex;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+  gap: 40px;
+  background-color: #f7f7f7;
+  padding: 30px 40px;
+}
+
+/* styling for form #newNote*/
+#newNote {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 2px solid #75b0f0;
+  border-radius: 25px;
+  padding: 25px;
+  background-color: white;
+}
+.newNote__title,
+.newNote__text,
+.search__input,
+.edit-form,
+.edit-form__title,
+.edit-form__text {
+  width: 100%;
+  border: 1px solid #75b0f0;
+  border-radius: 5px;
+  padding: 5px;
+}
+.newNote__text::placeholder,
+.newNote__title::placeholder,
+.search__input::placeholder,
+.edit-form__title::placeholder,
+.edit-form__text::placeholder {
+  font-size: 18px;
+  color: black;
+}
+.newNote__select {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #75b0f0;
+  border-radius: 5px;
+  padding: 3px 3px 0 3px;
+  margin-top: 10px;
+}
+.newNote__option {
+  border: 1px solid white;
+}
+.option1 {
+  background-color: #ff99c8;
+}
+.option2 {
+  background-color: #fcf6bd;
+}
+.option3 {
+  background-color: #d0f4de;
+}
+.option4 {
+  background-color: #a9def9;
+}
+.option5 {
+  background-color: #e4c1f9;
+}
+option:checked {
+  border: 2px solid black;
+}
+.newNote__submit {
+  background-color: #75b0f0;
+  border: 1px solid #4094ed;
+  border-radius: 10px;
+  padding: 5px 0;
+}
+.newNote__submit:hover {
+  transform: scale(1.05);
+}
+
+/* styling for .section__notes */
+.section__notes {
+  width: 60%;
+  border: 2px solid #75b0f0;
+  border-radius: 25px;
+  padding: 25px;
+  background-color: white;
+}
+/* styling for form .search */
+.search {
+  margin-bottom: 30px;
+}
+
+/* styling for .notes */
+.notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.note {
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  flex-basis: 300px;
+  flex-grow: 1;
+  position: relative;
+}
+.note__title {
+  padding-right: 55px;
+}
+
 .invalid {
-  border: 1px solid red;
+  border: 2px solid red;
+}
+.icon {
+  width: 40px;
+  height: 40px;
+}
+.icon:hover {
+  transform: scale(1.05);
+}
+.delete-icon {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+}
+.edit-icon {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+}
+
+/* styling for .edit-form */
+.edit-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.done-icon {
+  width: 45px;
+  height: 45px;
+  position: absolute;
+  top: 3px;
+  right: 2px;
+}
+.cancel-icon {
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  top: 55px;
+  right: 5px;
+}
+.edit-form__title,
+.edit-form__text {
+  width: 80%;
 }

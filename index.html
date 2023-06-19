@@ -10,11 +10,34 @@
   <body>
     <form name="newNote" id="newNote">
       <label>
-        <input type="text" id="newNote__title" placeholfer="Note's title" />
+        <input type="text" class="newNote__title" placeholder="Note's title" />
       </label>
-      <textarea placeholder="Note's text" id="newNote__text"> </textarea>
+      <textarea placeholder="Note's text" class="newNote__text"> </textarea>
+      <div>
+        <label for="newNote__select">Please chose background color</label>
+      <select class="newNote__select" id="newNote__select" size="5">
+        <option
+          value="option1"
+          class="newNote__option option1"
+          selected
+        ></option>
+        <option value="option2" class="newNote__option option2">
+        </option>
+        <option value="option3" class="newNote__option option3"></option>
+        <option value="option4" class="newNote__option option4"></option>
+        <option value="option5" class="newNote__option option5"></option>
+      </select>
+    </div>
       <button type="submit" class="newNote__submit">Add</button>
     </form>
+ <section class="section__notes">
+  <form class="search">
+    <label>
+    <input type="text" class="search__input" placeholder="Text here"></form>
+  </label>
+   </form>
+    <div class="notes"></div>
+ </section>
 
     <!-- JS code -->
     <script src="index.js"></script>
