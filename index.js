@@ -10,8 +10,8 @@ renderNotes(notesNode);
 
 // function for input validation
 function validation(inputNode, min, max) {
-  const valueLenght = inputNode.value.trim().length;
-  if (valueLenght < min || valueLenght > max) {
+  const valueLength = inputNode.value.trim().length;
+  if (valueLength < min || valueLength > max) {
     inputNode.classList.add("invalid");
     inputNode.addEventListener(
       "input",
@@ -25,16 +25,20 @@ function validation(inputNode, min, max) {
   return true;
 }
 
+// function gets actual time + date and returns as a string
 function getActualDate() {
+  const now = new Date();
   function adjustDate(date) {
     return date < 10 ? `0${date}` : date;
   }
-  const hour = adjustDate(new Date().getHours());
-  const minutes = adjustDate(new Date().getMinutes());
-  const date = adjustDate(new Date().getDate());
-  const month = adjustDate(new Date().getMonth() + 1);
-  return `${hour}:${minutes} ${date}.${month}.${new Date().getFullYear()}`;
+  const hour = adjustDate(now.getHours());
+  const minutes = adjustDate(now.getMinutes());
+  const date = adjustDate(now.getDate());
+  const month = adjustDate(now.getMonth() + 1);
+  return `${hour}:${minutes} ${date}.${month}.${now.getFullYear()}`;
 }
+
+//function ads new note to localeStorage, and invoke  function renderNotes;
 function addNote(titleNode, textNode) {
   const newNote = {
     title: titleNode.value,
@@ -43,22 +47,17 @@ function addNote(titleNode, textNode) {
     chanched: false,
     color: formNewNoteSelect.options[formNewNoteSelect.selectedIndex].value,
   };
-  console.log(formNewNoteSelect.options[formNewNoteSelect.selectedIndex].value);
 
-  let notes = localStorage.getItem("notes");
-  if (!notes) {
-    localStorage.setItem("notes", JSON.stringify([newNote]));
-  } else {
-    notes = JSON.parse(notes);
-    notes.push(newNote);
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }
+  let notes = JSON.parse(localStorage.getItem("notes") || "[]");
+  notes.push(newNote);
+  localStorage.setItem("notes", JSON.stringify(notes));
 
   titleNode.value = "";
   textNode.value = "";
   renderNotes(notesNode);
 }
 
+//function render all notes
 function renderNotes(parentNode, arr) {
   const notes = arr ? arr : JSON.parse(localStorage.getItem("notes"));
   if (!notes) {
@@ -67,10 +66,11 @@ function renderNotes(parentNode, arr) {
   let result = "";
   for (let i = notes.length - 1; i >= 0; i--) {
     const note = notes[i];
+    const noteStatus = note.chanched ? "Updated" : "Created";
     const newNote = `<div class='note ${note.color}' >
                   <h2 class='note__title'>${note.title}</h2>
                   <span class="note__date">
-                  ${note.chanched ? "Updated" : "Created"} : ${note.date}
+                  ${noteStatus} : ${note.date}
                   </span>
                   <p class='note__text'>${note.text}</p>
                   <img class="icon delete-icon"src='delete-icon.svg' />
@@ -82,57 +82,76 @@ function renderNotes(parentNode, arr) {
   parentNode.innerHTML = result;
 }
 
+//function delete choosed note
 function deleteNote(e) {
   if (!confirm("Are you sure you want to delete this note?")) {
     return;
   }
-  const title = e.target.closest(".note").firstElementChild.textContent;
+  const noteElement = e.target.closest(".note");
+  const title = noteElement.firstElementChild.textContent;
   const notes = JSON.parse(localStorage.getItem("notes"));
   let newNotes = notes.filter((item) => item.title != title);
   localStorage.setItem("notes", JSON.stringify(newNotes));
-  renderNotes(notesNode);
+  noteElement.remove();
 }
 
+//function first create a form for editing, replave nodeElem with form
+// and does reverce action when editing is done
 function editNote(e) {
   //first check if there is another open editor. if yes, cancel it
   if (isEditoring) {
+    console.log(isEditoring);
     cancelEdition();
   }
 
   //create form for note editoring
   const noteNode = e.target.closest(".note");
   const titleValue = noteNode.querySelector(".note__title").textContent;
-  // console.log(titleValue);
-
   const textValue = noteNode.querySelector(".note__text").textContent;
-  cloneNode = noteNode.cloneNode(true);
-  isEditoring = true;
 
+  //create copy of exiting noteNode
+  cloneNode = noteNode.cloneNode(true);
+
+  //create form
   const form = document.createElement("form");
   form.classList.add("edit-form");
+
   const input = document.createElement("input");
   input.setAttribute("type", "text");
   input.classList.add("edit-form__title");
+
   const textArea = document.createElement("textarea");
   textArea.classList.add("edit-form__text");
-  const imgDone = document.createElement("img");
-  imgDone.setAttribute("src", "done-icon.svg");
-  imgDone.classList.add("done-icon");
-  imgDone.classList.add("icon");
-  const imgCancel = document.createElement("img");
-  imgCancel.setAttribute("src", "cancel-icon.svg");
-  imgCancel.classList.add("cancel-icon");
-  imgCancel.classList.add("icon");
+
+  //function creates img node
+  function createImageElement(src, classNames) {
+    const img = document.createElement("img");
+    img.setAttribute("src", src);
+    classNames.forEach((className) => img.classList.add(className));
+    return img;
+  }
+
+  const imgDone = createImageElement("done-icon.svg", ["done-icon", "icon"]);
+  const imgCancel = createImageElement("cancel-icon.svg", [
+    "cancel-icon",
+    "icon",
+  ]);
+
   form.appendChild(input);
   form.appendChild(textArea);
   form.appendChild(imgDone);
   form.appendChild(imgCancel);
 
+  //replace exiting node with recently created form
   noteNode.replaceWith(form);
+
+  //fillful form with date from recently replced note node
   const formTitle = document.querySelector(".edit-form__title");
   const formText = document.querySelector(".edit-form__text");
   formTitle.value = titleValue;
   formText.value = textValue;
+
+  //add eventlistener to icons: cancel and done
   document.querySelector(".cancel-icon").onclick = () => cancelEdition();
   document.querySelector(".done-icon").onclick = () => {
     const valid1 = validation(formTitle, 5, 15);
@@ -140,30 +159,35 @@ function editNote(e) {
     if (valid1 && valid2) {
       const notes = JSON.parse(localStorage.getItem("notes"));
       const index = notes.findIndex((item) => item.title === titleValue);
-      // console.log(index);
+
       notes[index].title = document.querySelector(".edit-form__title").value;
       notes[index].text = document.querySelector(".edit-form__text").value;
       notes[index].date = getActualDate();
       notes[index].chanched = true;
+
       localStorage.setItem("notes", JSON.stringify(notes));
+
       renderNotes(notesNode);
+
+      isEditoring = false;
     }
   };
 }
 
+//function cancel note editining
 function cancelEdition() {
   const formNode = document.querySelector(".edit-form");
   formNode.replaceWith(cloneNode);
-  isEditoring = false;
   cloneNode = null;
+  isEditoring = false;
 }
 
+//add eventListener for click
 document.body.addEventListener("click", (e) => {
   let target = e.target;
-  //   console.log(target);
+
   if (target.classList.contains("newNote__submit")) {
     e.preventDefault();
-    console.log(e.target);
 
     const firstVal = validation(formNewNoteTitle, 5, 15);
     const secondVal = validation(formNewNoteText, 5, 100);
@@ -177,15 +201,16 @@ document.body.addEventListener("click", (e) => {
   }
 });
 
+//add eventListener for input
 document.querySelector(".search__input").oninput = (e) => {
   let inputValue = e.target.value;
   searchNote(inputValue);
 };
 
+//function finds elements that contain in the title
+// value passed as an argument and invoke renderNotes for rerendering
 function searchNote(value) {
   const notes = JSON.parse(localStorage.getItem("notes"));
   let newNotes = notes.filter((item) => item.title.includes(value));
   renderNotes(notesNode, newNotes);
 }
-
-const favoriteNotes = [];

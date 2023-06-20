@@ -1,7 +1,7 @@
 body {
   display: flex;
   flex-direction: row;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
   gap: 40px;
   background-color: #f7f7f7;
   padding: 30px 40px;
@@ -9,7 +9,7 @@ body {
 
 /* styling for form #newNote*/
 #newNote {
-  width: 35%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -29,6 +29,11 @@ body {
   border-radius: 5px;
   padding: 5px;
 }
+.newNote__text,
+.edit-form {
+  resize: vertical;
+}
+
 .newNote__text::placeholder,
 .newNote__title::placeholder,
 .search__input::placeholder,
@@ -79,7 +84,7 @@ option:checked {
 
 /* styling for .section__notes */
 .section__notes {
-  width: 60%;
+  width: 100%;
   border: 2px solid #75b0f0;
   border-radius: 25px;
   padding: 25px;
@@ -135,6 +140,7 @@ option:checked {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding-right: 60px;
 }
 .done-icon {
   width: 45px;
@@ -152,5 +158,14 @@ option:checked {
 }
 .edit-form__title,
 .edit-form__text {
-  width: 80%;
+  width: 100%;
+}
+
+@media screen and (min-width: 700px) {
+  body {
+    flex-wrap: nowrap;
+  }
+  #newNote {
+    width: 30%;
+  }
 }
